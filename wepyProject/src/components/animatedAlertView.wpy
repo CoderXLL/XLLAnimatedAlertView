@@ -1,0 +1,128 @@
+<template>
+  <div>
+    <div @tap.stop="hideAlert" v-if="isShow" class="mask"></div>
+    <!-- :style="pannelBorderRadius"竟然没有Vue的绑定style语法 -->
+    <div class="pannel" :animation="animationData" :class="{radius: radius}">
+      <div class="title-wrapper">
+        <div class="title">{{ title }}</div>
+        <div class="closeBtn" @tap="hideAlert">
+          <!-- <img alt="" /> -->
+        </div>
+      </div>
+      <div class="slot-wrapper">
+        <slot></slot>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import wepy from "@wepy/core"
+  wepy.component({
+    props: {
+      isShow: {
+        type: Boolean,
+        default: false,
+        required: true
+      },
+      title: {
+        type: String,
+        default: '',
+        required: false
+      },
+      radius: {
+        type: Boolean,
+        default: false,
+        required: false
+      }
+    },
+    methods: {
+      hideAlert() {
+        console.log('点击背景')
+        this.$emit('closeAlertView', 1, 2, 3)
+      }
+    },
+    data: {
+      animationData: {}
+    },
+    created() {
+      console.log('创建了alertView组件')
+      let animation = wx.createAnimation({
+        duration: 300,
+        timingFunction: 'ease'
+      })
+      this.animation = animation
+    },
+    computed: {
+      pannelBorderRadius() {
+        return {
+          borderRadius: `${this.radius}rpx ${this.radius}rpx 0 0`
+        }
+      }
+    },
+    watch: {
+      isShow(newValue) {
+        console.log('isShow变化了,' + newValue)
+        if (!newValue) {
+          this.animation.bottom('-100%').step()
+        } else {
+          this.animation.bottom('0').step()
+        }
+        this.animationData = this.animation.export()
+      }
+    }
+  })
+</script>
+
+<style lang="less">
+  .mask {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.6);
+  }
+  .pannel {
+    position: fixed;
+    bottom: -100%;
+    width: 100%;
+    min-height: 400rpx;
+    z-index: 101;
+    background-color: #fff;
+    &.radius {
+      border-radius: 30rpx 30rpx 0 0;
+    }
+    .title-wrapper {
+      width: 100%;
+      height: 100rpx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      border-bottom: solid 2rpx rgba(0, 0, 0, 0.1);
+      .title {
+        font-size: 36rpx;
+        color: #000;
+        text-align: center;
+      }
+      .closeBtn {
+        position: absolute;
+        top: 38rpx;
+        right: 38rpx;
+        font-size: 0;
+        width: 45rpx;
+        height: 45rpx;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: red;
+        image {
+          width: 24rpx;
+          height: 24rpx;
+        }
+      }
+    }
+  }
+</style>
