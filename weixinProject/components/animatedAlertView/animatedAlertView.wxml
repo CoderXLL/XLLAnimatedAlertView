@@ -1,0 +1,16 @@
+<!--components/animatedAlertView/animatedAlertView.wxml-->
+<view>
+  <view wx:if="{{ isShow }}" bindtap="hideAlert" class="mask"></view>
+  <!-- :style="pannelBorderRadius"竟然没有Vue的绑定style语法 -->
+  <view class="pannel" animation="{{ animationData }}">
+    <view class="title-wrapper">
+      <view class="title">{{ title }}</view>
+      <view class="closeBtn" bindtap="hideAlert">
+        <!-- <img alt="" /> -->
+      </view>
+    </view>
+    <view class="slot-wrapper">
+      <slot></slot>
+    </view>
+  </view>
+</view>

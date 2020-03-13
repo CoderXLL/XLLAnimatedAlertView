@@ -1,0 +1,44 @@
+.mask {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+.pannel {
+  position: fixed;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  min-height: 400rpx;
+  z-index: 101;
+  background-color: #fff;
+}
+.pannel .title-wrapper {
+  width: 100%;
+  height: 100rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border-bottom: solid 2rpx rgba(0, 0, 0, 0.1);
+}
+.title-wrapper .title {
+  font-size: 36rpx;
+  color: #000;
+  text-align: center;
+}
+.title-wrapper .closeBtn {
+  position: absolute;
+  top: 38rpx;
+  right: 38rpx;
+  font-size: 0;
+  width: 45rpx;
+  height: 45rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: red;
+}
