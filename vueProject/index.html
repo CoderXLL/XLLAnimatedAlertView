@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vue实现动画弹窗组件</title>
+
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+    .pop-enter-active {
+      /* animation-name: popInUp; */
+      transform: translateY(100%);
+      animation-duration: 0.2s;
+      animation-fill-mode: both;
+    }
+    .pop-enter-to {
+      transform: translateY(0);
+      opacity: 1;
+      animation-duration: 0.2s;
+      animation-fill-mode: both;
+    }
+    .pop-leave-active {
+      /* animation-name: popOutDown; */
+      transform: translateY(0);
+      animation-duration: 0.2s;
+      animation-fill-mode: both;
+    }
+    .pop-leave-to {
+      /* animation-name: popOutDown; */
+      transform: translateY(100%);
+      animation-duration: 0.2s;
+      animation-fill-mode: both;
+    }
+    /* @keyframes popInUp {
+      0% {
+          transform: translate3d(0, 100%, 0);
+          visibility: visible;
+      }
+      to {
+        transform: translateZ(0);
+      }
+    }
+    @keyframes popOutDown {
+      0% {
+        transform: translateZ(0);
+      }
+      to {
+        visibility: hidden;
+        transform: translate3d(0, 100%, 0);
+      }
+    } */
+    .delay-leave-active {
+      -webkit-animation-delay: 0.2s;
+      -moz-animation-delay: 0.2s;
+      -o-animation-delay: 0.2s;
+      animation-delay: 0.2s;
+      transform: translateX(0);
+    }
+
+    .mask {
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      background: rgba(0, 0, 0, 0.6);
+    }
+    .pannel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      min-height: 400px;
+      z-index: 101;
+      background-color: #fff;
+      -webkit-transition: all 0.2s ease-in;
+      transition: all 0.2s ease-in;
+    }
+    .pannel .title-wrapper {
+      width: 100%;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+    }
+    .title-wrapper .title {
+      font-size: 18px;
+      color: #000;
+      text-align: center;
+    }
+    .title-wrapper .closeBtn {
+      position: absolute;
+      top: 15px;
+      right: 19px;
+      font-size: 0;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <button v-cloak @click="btnClick">{{ btnTitle }}</button>
+    <alertview 
+      :isshow="showing"
+      @hidealert="hideAlert"
+      title="我是标题"
+    >
+    </alertview>
+  </div>
+
+  <!-- use cdn to access vue -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <template id="alertView">
+    <div>
+      <div v-if="isShowData" @click.stop="hidealert" class="mask"></div>
+      <transition name="pop">
+        <div v-if="isShowData" class="pannel" :class="{radius: radius}">
+          <div class="title-wrapper">
+            <div class="title">{{ title }}</div>
+            <div class="closeBtn" @click="hidealert">
+            </div>
+          </div>
+          <div class="slot-wrapper">
+            <slot></slot>
+          </div>
+        </div>
+      </transition>
+    </div>
+  </template>
+  <script>
+    const alertview = {
+      template: '#alertView',
+      methods: {
+        hidealert() {
+          this.$emit('hidealert', 1, 2)
+        }
+      },
+      data() {
+        return {
+          isShowData: this.isshow
+        }
+      },
+      props: {
+        isshow: {
+          type: Boolean,
+          default: false,
+          required: true
+        },
+        title: {
+          type: String,
+          defalut: '',
+          required: false
+        },
+        radius: {
+          type: Number,
+          defalut: 0,
+          required: false
+        }
+      },
+      watch: {
+        isshow(newValue) {
+          this.isShowData = newValue
+        }
+      }
+    }
+    const app = new Vue({
+      el: '#app',
+      data: {
+        showing: false
+      },
+      computed: {
+        btnTitle() {
+          return this.showing?'隐藏':'显示'
+        }
+      },
+      methods: {
+        btnClick() {
+          this.showing = true
+        },
+        hideAlert() {
+          this.showing = false
+        }
+      },
+      components: {
+        alertview
+      }
+    });
+  </script>
+</body>
+
+</html>
